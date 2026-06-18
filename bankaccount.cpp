@@ -40,12 +40,14 @@ public:
     Account (int aN, string o, double b) : accountNumber(aN), owner(o), balance(b){}
 
     int deposit(double amount){
+        cout << "Your account transaction is: " << balance << " + " << amount << endl; 
         balance += amount; 
         transactions.push_back(Transaction(amount, "Deposit", "today"));
         return 0; 
     };
     int withdraw(double amount){
         if (amount <= balance){
+            cout << "Your account transaction is: " << balance << " - " << amount << endl; 
             balance -= amount; 
             transactions.push_back(Transaction(amount, "Withdraw", "today")); 
             return 0; 
@@ -55,7 +57,7 @@ public:
         }
     };
     void showAccount(){
-        cout << owner << "'s account number is " << accountNumber << " and you have " << balance << endl; 
+        cout << owner << "'s account number is " << accountNumber << " and you have " << balance << "€" << endl; 
     };
     void showTransactions(){
         for (size_t i = 0; i < transactions.size(); i++){
@@ -91,10 +93,11 @@ public:
         cout << "Enter initial deposit: "; 
         cin >> initDeposit; 
         
+        // creates new account and adds to list 
         Account newAccount(nextAccountNumber, owner, initDeposit); 
         accounts.push_back(newAccount); 
         
-        cout << "Account created with number " << nextAccountNumber << endl; 
+        cout << "Account for " << owner << " created with account number: " << nextAccountNumber << endl; 
         nextAccountNumber++; 
         return 0;  
     };
@@ -135,10 +138,10 @@ int main(){
         cin >> input; 
 
         switch(input){
-            case 1: 
+            case 1: // create account
                 bank.createAccount(); 
                 break; 
-            case 2: {
+            case 2: { // deposit 
                 int accNum; 
                 double amount; 
                 cout << "Account number: "; 
@@ -148,10 +151,11 @@ int main(){
                 int idx = bank.findAccount(accNum); 
                 if (idx != -1){
                     bank.getAccounts()[idx].deposit(amount); 
+                    bank.getAccounts()[idx].showAccount(); 
                 }
                 break; 
             }
-            case 3: {
+            case 3: { // withdraw
                 int accNum; 
                 double amount; 
                 cout << "Account number: "; 
@@ -161,10 +165,11 @@ int main(){
                 int idx = bank.findAccount(accNum); 
                 if (idx != -1){
                     bank.getAccounts()[idx].withdraw(amount); 
+                    bank.getAccounts()[idx].showAccount(); 
                 }
                 break; 
             }
-            case 4: {
+            case 4: { // show account 
                 int accNum; 
                 cout << "Account number: "; 
                 cin >> accNum; 
@@ -174,16 +179,17 @@ int main(){
                 }
                 break; 
             }
-            case 5: {
+            case 5: { // show all accounts 
                 bank.showAllAccounts(); 
                 break; 
             }
-            case 6: {
+            case 6: { // exit 
                 running = false; 
                 break; 
             }
             default: {
                 cout << "Invalid option" << endl; 
+                break; 
             }
         }
     }
