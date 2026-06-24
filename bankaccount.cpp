@@ -2,12 +2,20 @@
 #include <vector>
 #include <string>
 #include <limits>
+#include <ctime>
 using namespace std;
 
 void clearInputBuffer()
 {
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
+string getCurrentDate(){
+    time_t now = time(0); 
+    string dt = ctime(&now); 
+    dt.pop_back(); 
+    return dt; 
 }
 
 // represents deposit or withdrawel
@@ -21,19 +29,19 @@ private:
 public:
     Transaction(double a, string t, string d) : amount(a), type(t), date(d) {}
 
-    void getInfo()
+    void getInfo() const 
     {
         cout << type << ": " << amount << " on " << date << endl;
     };
-    double getAmount()
+    double getAmount() const 
     {
         return amount;
     };
-    string getType()
+    string getType() const
     {
         return type;
     };
-    string getDate()
+    string getDate() const 
     {
         return date;
     };
@@ -53,9 +61,13 @@ public:
 
     int deposit(double amount)
     {
+        if (amount <= 0){
+            cout << "Invalid amount." << endl; 
+            return -1; 
+        }
         cout << "Your account transaction is: " << balance << " + " << amount << endl;
         balance += amount;
-        transactions.push_back(Transaction(amount, "Deposit", "today"));
+        transactions.push_back(Transaction(amount, "Deposit", getCurrentDate()));
         return 0;
     };
     int withdraw(double amount)
@@ -64,7 +76,7 @@ public:
         {
             cout << "Your account transaction is: " << balance << " - " << amount << endl;
             balance -= amount;
-            transactions.push_back(Transaction(amount, "Withdraw", "today"));
+            transactions.push_back(Transaction(amount, "Withdraw", getCurrentDate()));
             return 0;
         }
         else
@@ -98,6 +110,14 @@ public:
     }
 };
 
+
+// savings account, inherits from account
+class SavingsAccount : public Account{
+public: 
+    SavingsAccount(int aN, string o, double b) : Account(aN, o, b){}
+};
+
+
 // the bank which holds and manages all accounts
 class Bank
 {
@@ -107,6 +127,8 @@ private:
     int nextAccountNumber = 1000;
 
 public:
+    Bank(string name) : bankName(name){}
+
     int createAccount()
     {
         string owner;
@@ -156,6 +178,17 @@ public:
         }
         return 0;
     };
+    int transfer(int fromNum, int toNum, double amount){
+        int fromIdx = findAccount(fromNum); 
+        int toIdx = findAccount(toNum); 
+        if(fromIdx == -1 || toIdx == -1){ return -1; }
+        int result = getAccounts()[fromIdx].withdraw(amount); 
+        if(result == 0){
+            getAccounts()[toIdx].deposit(amount); 
+            cout << "Transfer successful.\n"; 
+        }
+        return result; 
+    }
     vector<Account> &getAccounts()
     {
         return accounts;
@@ -164,7 +197,7 @@ public:
 
 int main()
 {
-    Bank bank;
+    Bank bank("Bank"); 
     int input;
     bool running = true;
 
@@ -174,8 +207,9 @@ int main()
         cout << "2: deposit" << endl;
         cout << "3: withdraw" << endl;
         cout << "4: show account" << endl;
-        cout << "5: show all accounts" << endl;
-        cout << "6: exit" << endl;
+        cout << "5: show transaction history" << endl; 
+        cout << "6: show all accounts" << endl;
+        cout << "7: exit" << endl;
 
         if (!(cin >> input))
         {
@@ -262,12 +296,29 @@ int main()
             }
             break;
         }
-        case 5:
+        case 5: {
+            int accNum;
+            cout << "Account number: ";
+            if (!(cin >> accNum))
+            {
+                cout << "Invalid account number." << endl;
+                clearInputBuffer();
+                break;
+            }
+            clearInputBuffer();
+            int idx = bank.findAccount(accNum);
+            if (idx != -1)
+            {
+                bank.getAccounts()[idx].showTransactions();
+            }
+            break;
+        }
+        case 6:
         { // show all accounts
             bank.showAllAccounts();
             break;
         }
-        case 6:
+        case 7:
         { // exit
             running = false;
             break;
