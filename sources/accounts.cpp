@@ -18,7 +18,7 @@ int Account::deposit(double amount)
         return -1;
     }
 
-    std::cout << "Your account transaction is: " << balance << " + " << amount << std::endl;
+    std::cout << "Your account transaction is: " << balance << "€ + " << amount << "€" << std::endl;
     balance += amount;
     addTransaction(amount, "Deposit");
     return 0;
@@ -37,7 +37,7 @@ int Account::withdraw(double amount)
         return -1;
     }
 
-    std::cout << "Your account transaction is: " << balance << " - " << amount << std::endl;
+    std::cout << "Your account transaction is: " << balance << "€ - " << amount << "€" << std::endl;
     balance -= amount;
     addTransaction(amount, "Withdraw");
     return 0;

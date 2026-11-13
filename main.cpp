@@ -11,6 +11,7 @@ int main()
     int input;
     bool running = true;
 
+    // main menu: display and choose option 
     while (running)
     {
         std::cout << "1: create account" << std::endl;
@@ -32,10 +33,10 @@ int main()
 
         switch (input)
         {
-        case 1:
+        case 1: // create account 
             bank.createAccount();
             break;
-        case 2:
+        case 2: // deposit 
         {
             int accountNumber;
             double amount;
@@ -62,7 +63,7 @@ int main()
             }
             break;
         }
-        case 3:
+        case 3: // withdraw 
         {
             int accountNumber;
             double amount;
@@ -89,7 +90,7 @@ int main()
             }
             break;
         }
-        case 4:
+        case 4: // show account
         {
             int accountNumber;
             std::cout << "Account number: ";
@@ -107,7 +108,7 @@ int main()
             }
             break;
         }
-        case 5:
+        case 5: // show transaction history 
         {
             int accountNumber;
             std::cout << "Account number: ";
@@ -125,10 +126,10 @@ int main()
             }
             break;
         }
-        case 6:
+        case 6: // show all accounts 
             bank.showAllAccounts();
             break;
-        case 7:
+        case 7: // find account 
         {
             std::string accountName;
             std::cout << "Find account by name: " << std::endl;
@@ -146,7 +147,7 @@ int main()
             }
             break;
         }
-        case 8:
+        case 8: // exit (saves all changes)
             bank.saveToFile("accounts.txt");
             running = false;
             break;
